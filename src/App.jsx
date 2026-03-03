@@ -1,18 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
-// Import your components here
-// import Home from './components/Home';
-// import About from './components/About';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Menu from './pages/Menu';
+import Cart from './pages/Cart';
 
 const App = () => {
     return (
         <Router>
-            <Switch>
-                {/* Define your routes here */}
-                {/* <Route path='/' exact component={Home} /> */}
-                {/* <Route path='/about' component={About} /> */}
-            </Switch>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/menu" element={<Menu />} />
+                <Route path="/cart" element={<Cart />} />
+            </Routes>
         </Router>
     );
 };
