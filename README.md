@@ -1,70 +1,63 @@
-# SmartCTX Smart Canteen Web App
+# SmartCTX - Умная столовая для телефонов 📱
 
-## Project Overview
+## Обзор проекта
+SmartCTX — это мобильное приложение формата Minimum Viable Product (MVP), созданное с использованием Expo и React Native. Цель проекта — оцифровать и улучшать пользовательский опыт (UX) в школьных и университетских столовых. Оно предоставляет гибкое и адаптивное меню без очередей в мобильном формате.
 
-The SmartCTX Smart Canteen Web App is designed to streamline the food ordering process within canteens, providing a seamless user experience for students and staff. The application facilitates online ordering, payment, and menu management, enhancing the efficiency of food services in educational institutions.
+## Реализованный Функционал
+- **Кроссплатформенность:** Благодаря **Expo SDK** приложение работает как на Android, так и на iOS.
+- **Главный экран (Home):** Встроенная статистика и удобный вход.
+- **Интерактивное Меню (Menu):** Категории блюд с ценами в тенге, счётчик корзины и умные фильтры категорий.
+- **Корзина (Cart):** Глобальное управление состоянием (добавление, удаление, подсчет суммы товаров) через **React Context & useReducer**.
+- **Оформление заказа (OrderStatus):** Подтверждение заказа и расчет времени выполнения.
+- **Адаптивный UI и Glassmorphism:** Тёмная, современная визуальная тема (Dark Mode + Glassmorphism), которая сжимается и растягивается под любые размеры экрана через стандартный `Dimensions API`.
 
-## Features
+## Технологический Стек
+* **Фреймворк:** React Native 
+* **Инструмент сборки:** Expo (SDK 54)
+* **Навигация:** React Navigation (Bottom Tabs, Stack)
+* **Стейт-менеджмент:** React Context API + Hooks (`useReducer`)
+* **Иконки:** `@expo/vector-icons`
 
-- **User Registration/Login:** Users can create accounts and log in to access personalized features.
-- **Menu Management:** Administrators can manage food items, their availability, and prices.
-- **Online Ordering:** Users can place orders for meals in advance.
-- **Payment Integration:** Supports multiple payment methods for convenience.
-- **Order Tracking:** Users can track the status of their orders in real-time.
-- **Feedback System:** Users can provide feedback on the food and services to improve quality.
+---
 
-## Tech Stack
+## 👨‍💻 Инструкция для студентов: Как всё это работает?
 
-- **Frontend:** React.js
-- **Backend:** Node.js with Express
-- **Database:** MongoDB
-- **Authentication:** JWT (JSON Web Tokens)
-- **Payment Processing:** Stripe API
+Внутри папки `mobile/` находится вся кодовая база нашего iOS и Android приложения.
 
-## Installation Instructions
+### 1. Архитектура файлов (Где что лежит?)
+* `App.js` — **Самый важный файл.** Здесь живут все настройки путей (Табов) и `CartProvider`. Это — входная точка.
+* `screens/` — Это ваши экраны приложения. 
+  * `Home.js`, `Menu.js`, `Cart.js`, `Profile.js`. Каждый экран отрисовывает свою уникальную страницу.
+* `components/` — Повторяющиеся блоки кода (чтобы не писать одно и то же). 
+  * Ваша блюдо в меню — это компонент `FoodCard.js`. А строка товара в корзине — `CartItem.js`.
+* `context/` — Управление данными (логика Корзины).
+  * В файле `CartContext.js` спрятана магия: когда вы нажимаете (+) или (-) к товару, здесь работает Reducer, который обновляет итоговую сумму всех товаров во всем приложении сразу.
+* `data/` — Временная База Данных.
+  * Файл `menuItems.js` содержит 8 позиций меню для текущего MVP.
 
-1. **Clone the Repository:**  
-   Clone the repository to your local machine using:
+### 2. Как запустить проект у себя на компьютере? 🚀
+Если вы хотите изменить или проверить код, выполните следующие несколько шагов:
+
+1. **Откройте терминал/командную строку**
+2. **Перейдите в папку с приложением:**
    ```bash
-   git clone https://github.com/MardanKasym/SmartCTX.git
+   cd mobile
+   ```
+3. **Установите зависимости** (вам нужен установленный Node.js):
+   ```bash
+   npm install
+   ```
+4. **Запустите сервер разработчика Expo:**
+   ```bash
+   npx expo start
    ```
 
-2. **Install Dependencies:**  
-   Navigate to the project directory and install the required dependencies:
-   ```bash
-   cd SmartCTX
-   npm install  
-   ```
+### 3. Как посмотреть приложение на своём телефоне?
+* **Если у вас iPhone:** Установите приложение **Expo Go** из App Store. Откройте стандартную камеру iPhone и наведите на QR-код, который появился в терминале.
+* **Если у вас Android:** Установите приложение **Expo Go** из Google Play. Откройте его, нажмите "Scan QR code" и наведите на терминал.
+* **ВАЖНО!** Ваш телефон и компьютер **ДОЛЖНЫ БЫТЬ ПОДКЛЮЧЕНЫ К ОДНОМУ WI-FI РОУТЕРУ**, иначе они не увидят друг друга!
 
-3. **Set Up Environment Variables:**  
-   Create a `.env` file in the root directory and add the necessary environment variables (e.g., database URI, API keys).
+> **Подсказка:** Если у вас вылезает страшная ошибка `EMFILE`, значит ваш компьютер устал следить за слишком большим количеством файлов. Мы уже добавили специальный фильтр в `metro.config.js`, но чтобы система сработала, иногда в терминале Mac нужно прописать `ulimit -n 65536`.
 
-4. **Run the Application:**  
-   Start the application using:
-   ```bash
-   npm start  
-   ```
-
-5. **Access the App:**  
-   Open your web browser and go to `http://localhost:3000` to access the Smart Canteen App.
-
-## Contribution Guidelines
-
-We welcome contributions to improve the SmartCTX Smart Canteen Web App! Here’s how you can contribute:
-
-1. **Fork the Repository:** Click on the fork button at the top right of this repository to create your fork.
-2. **Create a Feature Branch:** Create a new branch for your feature or bug fix:
-   ```bash
-   git checkout -b feature/new-feature
-   ```
-3. **Commit Your Changes:** Commit your changes with a descriptive message:
-   ```bash
-   git commit -m 'Add some new feature'
-   ```
-4. **Push to the Branch:** Push your changes to your forked repository:
-   ```bash
-   git push origin feature/new-feature
-   ```
-5. **Open a Pull Request:**  Go to the original repository and submit a pull request with a clear description of your changes.
-
-Thank you for your contributions!
+---
+*Домашнее задание: Попробуйте найти файл `data/menuItems.js` и добавить туда своё любимое блюдо!*
