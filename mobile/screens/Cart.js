@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, FlatList, SafeAreaView, TouchableOpacity } from
 import { StatusBar } from 'expo-status-bar';
 import { useCart } from '../context/CartContext';
 import CartItem from '../components/CartItem';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function CartScreen({ navigation }) {
     const { cart, totalPrice, clearCart } = useCart();
+    const { t } = useLanguage();
 
     const handleCheckout = () => {
-        navigation.navigate('OrderStatus');
+        navigation.navigate('Checkout');
     };
 
     return (
@@ -16,10 +18,10 @@ export default function CartScreen({ navigation }) {
             <StatusBar style="light" />
 
             <View style={styles.header}>
-                <Text style={styles.title}>Корзина</Text>
+                <Text style={styles.title}>{t('cart')}</Text>
                 {cart.length > 0 && (
                     <TouchableOpacity onPress={clearCart}>
-                        <Text style={styles.clearText}>Очистить</Text>
+                        <Text style={styles.clearText}>{t('clear')}</Text>
                     </TouchableOpacity>
                 )}
             </View>
@@ -27,17 +29,17 @@ export default function CartScreen({ navigation }) {
             {cart.length === 0 ? (
                 <View style={styles.emptyState}>
                     <Text style={{ fontSize: 80 }}>🛒</Text>
-                    <Text style={styles.emptyTitle}>Корзина пуста</Text>
-                    <Text style={styles.emptySub}>Добавьте блюда из меню</Text>
+                    <Text style={styles.emptyTitle}>{t('cartEmpty')}</Text>
+                    <Text style={styles.emptySub}>{t('addItems')}</Text>
                     <TouchableOpacity style={styles.browseBtn} onPress={() => navigation.navigate('Меню')}>
-                        <Text style={styles.browseBtnText}>Перейти к меню</Text>
+                        <Text style={styles.browseBtnText}>{t('goToMenu')}</Text>
                     </TouchableOpacity>
                 </View>
             ) : (
                 <>
                     <FlatList
                         data={cart}
-                        renderItem={({ item }) => <CartItem item={item} />}
+                        renderItem={({ item, index }) => <CartItem item={item} index={index} />}
                         keyExtractor={item => item.id}
                         contentContainerStyle={styles.list}
                         showsVerticalScrollIndicator={false}
@@ -45,11 +47,11 @@ export default function CartScreen({ navigation }) {
 
                     <View style={styles.footer}>
                         <View style={styles.totalRow}>
-                            <Text style={styles.totalLabel}>Итого:</Text>
+                            <Text style={styles.totalLabel}>{t('total')}</Text>
                             <Text style={styles.totalValue}>{totalPrice} ₸</Text>
                         </View>
                         <TouchableOpacity style={styles.checkoutBtn} onPress={handleCheckout}>
-                            <Text style={styles.checkoutText}>Оформить заказ</Text>
+                            <Text style={styles.checkoutText}>{t('checkout')}</Text>
                         </TouchableOpacity>
                     </View>
                 </>

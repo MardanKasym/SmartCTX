@@ -1,92 +1,197 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, SafeAreaView, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
+// Premium decorative background shapes
+const BackgroundBlobs = () => (
+    <View style={StyleSheet.absoluteFill}>
+        <View style={styles.blob1} />
+        <View style={styles.blob2} />
+        <View style={styles.blob3} />
+    </View>
+);
+
 export default function HomeScreen({ navigation }) {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(50)).current;
+    const { user } = useAuth();
+    const { t } = useLanguage();
+
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+            Animated.spring(slideAnim, {
+                toValue: 0,
+                tension: 20,
+                friction: 7,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    }, []);
+
+    const greeting = user ? `${t('welcomeBack')}, ${user.name}!` : t('welcomeTo');
+
     return (
-        <SafeAreaView style={styles.safe}>
+        <SafeAreaView style={styles.container}>
             <StatusBar style="light" />
-            <View style={styles.container}>
-                {/* Logo */}
-                <View style={styles.logoRow}>
-                    <View style={styles.logoIcon}>
-                        <Text style={{ fontSize: 22 }}>🍴</Text>
+
+            <LinearGradient
+                colors={['#0f172a', '#1e1b4b']} // Deep premium dark theme
+                style={StyleSheet.absoluteFill}
+            />
+
+            <BackgroundBlobs />
+
+            <Animated.View
+                style={[
+                    styles.content,
+                    {
+                        opacity: fadeAnim,
+                        transform: [{ translateY: slideAnim }]
+                    }
+                ]}
+            >
+                <View style={styles.headerContainer}>
+                    <View style={styles.iconContainer}>
+                        <Ionicons name="restaurant" size={40} color="#6366f1" />
                     </View>
-                    <Text style={styles.logoText}>SmartCTX</Text>
+                    <Text style={styles.greeting}>{greeting}</Text>
+                    {!user && <Text style={styles.title}>SmartCTX</Text>}
+                    <Text style={styles.subtitle}>
+                        {t('smartDiningDesc')}
+                    </Text>
                 </View>
 
-                {/* Hero */}
-                <View style={styles.hero}>
-                    <Text style={styles.heading}>Умное питание{'\n'}для вашего{'\n'}будущего</Text>
-                    <Text style={styles.sub}>Заказывайте любимые блюда из столовой в пару кликов. Никаких очередей!</Text>
-                </View>
+                <View style={styles.cardsContainer}>
+                    <View style={styles.statsCard}>
+                        <View style={styles.statItem}>
+                            <Ionicons name="time-outline" size={24} color="#818cf8" />
+                            <Text style={styles.statValue}>~5 {t('min')}</Text>
+                            <Text style={styles.statLabel}>{t('prepTime')}</Text>
+                        </View>
+                        <View style={styles.divider} />
+                        <View style={styles.statItem}>
+                            <Ionicons name="flame-outline" size={24} color="#fbbf24" />
+                            <Text style={styles.statValue}>100%</Text>
+                            <Text style={styles.statLabel}>{t('freshFood')}</Text>
+                        </View>
+                    </View>
 
-                {/* Stats */}
-                <View style={styles.statsRow}>
-                    <View style={styles.statCard}>
-                        <Text style={styles.statEmoji}>⏱️</Text>
-                        <Text style={styles.statVal}>0 мин</Text>
-                        <Text style={styles.statLabel}>Очереди</Text>
-                    </View>
-                    <View style={styles.statCard}>
-                        <Text style={styles.statEmoji}>🥗</Text>
-                        <Text style={styles.statVal}>100%</Text>
-                        <Text style={styles.statLabel}>Полезно</Text>
-                    </View>
-                    <View style={styles.statCard}>
-                        <Text style={styles.statEmoji}>👥</Text>
-                        <Text style={styles.statVal}>2.5k</Text>
-                        <Text style={styles.statLabel}>Учеников</Text>
-                    </View>
-                </View>
-
-                {/* CTA */}
-                <View style={styles.ctaArea}>
-                    <TouchableOpacity style={styles.mainBtn} onPress={() => navigation.navigate('Меню')}>
-                        <Text style={styles.mainBtnText}>Открыть меню</Text>
-                        <Text style={{ color: '#fff', fontSize: 18 }}>→</Text>
+                    <TouchableOpacity
+                        style={styles.actionButton}
+                        onPress={() => navigation.navigate('Меню')}
+                        activeOpacity={0.8}
+                    >
+                        <LinearGradient
+                            colors={['#6366f1', '#4f46e5']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.gradientButton}
+                        >
+                            <Text style={styles.buttonText}>{t('openMenu')}</Text>
+                            <View style={styles.arrowCircle}>
+                                <Ionicons name="arrow-forward" size={20} color="#6366f1" />
+                            </View>
+                        </LinearGradient>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </Animated.View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     safe: { flex: 1, backgroundColor: '#0f172a' },
+    gradientBg: {
+        ...StyleSheet.absoluteFillObject,
+    },
+    bokeh: {
+        position: 'absolute',
+        borderRadius: 999,
+    },
+    bokeh1: {
+        width: width * 0.7,
+        height: width * 0.7,
+        backgroundColor: 'rgba(99, 102, 241, 0.08)',
+        top: -width * 0.15,
+        right: -width * 0.15,
+    },
+    bokeh2: {
+        width: width * 0.5,
+        height: width * 0.5,
+        backgroundColor: 'rgba(139, 92, 246, 0.06)',
+        top: width * 0.4,
+        left: -width * 0.2,
+    },
+    bokeh3: {
+        width: width * 0.3,
+        height: width * 0.3,
+        backgroundColor: 'rgba(99, 102, 241, 0.05)',
+        bottom: width * 0.15,
+        right: width * 0.1,
+    },
     container: { flex: 1, paddingHorizontal: 20, paddingTop: 10 },
 
     logoRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 30 },
     logoIcon: {
-        width: 42, height: 42, borderRadius: 12,
+        width: 44, height: 44, borderRadius: 14,
         backgroundColor: 'rgba(99, 102, 241, 0.15)',
         borderWidth: 1, borderColor: 'rgba(99, 102, 241, 0.4)',
         justifyContent: 'center', alignItems: 'center',
     },
-    logoText: { fontSize: 22, fontWeight: '800', color: '#f8fafc' },
+    logoText: { fontSize: 22, fontWeight: '800', color: '#f8fafc', letterSpacing: 1 },
 
     hero: { marginBottom: 30 },
-    heading: { fontSize: Math.min(width * 0.09, 36), fontWeight: '800', color: '#fff', lineHeight: Math.min(width * 0.11, 44) },
+    heading: {
+        fontSize: Math.min(width * 0.09, 36),
+        fontWeight: '800',
+        color: '#fff',
+        lineHeight: Math.min(width * 0.11, 44),
+    },
+    headingAccent: {
+        color: '#818cf8',
+    },
     sub: { fontSize: 15, color: '#94a3b8', marginTop: 12, lineHeight: 22 },
 
     statsRow: { flexDirection: 'row', gap: 10, marginBottom: 20 },
     statCard: {
-        flex: 1, backgroundColor: 'rgba(30, 41, 59, 0.7)',
-        borderRadius: 18, padding: 16, alignItems: 'center',
-        borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
+        flex: 1,
+        backgroundColor: 'rgba(30, 41, 59, 0.5)',
+        borderRadius: 20,
+        padding: 16,
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.08)',
+        backdropFilter: 'blur(10px)',
     },
-    statEmoji: { fontSize: 20, marginBottom: 6 },
+    statEmoji: { fontSize: 22, marginBottom: 6 },
     statVal: { fontSize: 20, fontWeight: '800', color: '#fff' },
     statLabel: { fontSize: 11, color: '#94a3b8', marginTop: 2 },
 
     ctaArea: { marginTop: 'auto', marginBottom: 20 },
     mainBtn: {
-        backgroundColor: '#6366f1', height: 58, borderRadius: 16,
-        flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10,
-        shadowColor: '#6366f1', shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.4, shadowRadius: 16, elevation: 8,
+        backgroundColor: '#6366f1',
+        height: 60,
+        borderRadius: 18,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10,
+        shadowColor: '#6366f1',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.5,
+        shadowRadius: 20,
+        elevation: 10,
     },
     mainBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
 });

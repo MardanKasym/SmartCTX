@@ -1,12 +1,39 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { useCart } from '../context/CartContext';
 
-export default function CartItem({ item }) {
+export default function CartItem({ item, index }) {
     const { changeQty, removeFromCart } = useCart();
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(-30)).current;
+
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 400,
+                delay: (index || 0) * 80,
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 400,
+                delay: (index || 0) * 80,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    }, []);
 
     return (
-        <View style={styles.row}>
+        <Animated.View
+            style={[
+                styles.row,
+                {
+                    opacity: fadeAnim,
+                    transform: [{ translateX: slideAnim }],
+                },
+            ]}
+        >
             <Image source={{ uri: item.image }} style={styles.img} />
             <View style={styles.details}>
                 <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
@@ -17,11 +44,11 @@ export default function CartItem({ item }) {
                     <Text style={styles.qtyText}>−</Text>
                 </TouchableOpacity>
                 <Text style={styles.qty}>{item.quantity}</Text>
-                <TouchableOpacity style={styles.qtyBtn} onPress={() => changeQty(item.id, 1)}>
+                <TouchableOpacity style={[styles.qtyBtn, styles.qtyBtnPlus]} onPress={() => changeQty(item.id, 1)}>
                     <Text style={styles.qtyText}>+</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </Animated.View>
     );
 }
 
@@ -29,15 +56,17 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(255,255,255,0.04)',
+        backgroundColor: 'rgba(30, 41, 59, 0.6)',
         borderRadius: 16,
-        padding: 10,
+        padding: 12,
         marginBottom: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.06)',
     },
     img: {
         width: 56,
         height: 56,
-        borderRadius: 12,
+        borderRadius: 14,
     },
     details: {
         flex: 1,
@@ -60,12 +89,15 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     qtyBtn: {
-        width: 30,
-        height: 30,
+        width: 32,
+        height: 32,
         borderRadius: 10,
-        backgroundColor: 'rgba(255,255,255,0.1)',
+        backgroundColor: 'rgba(255,255,255,0.08)',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    qtyBtnPlus: {
+        backgroundColor: 'rgba(99, 102, 241, 0.3)',
     },
     qtyText: {
         color: '#fff',

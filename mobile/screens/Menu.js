@@ -1,20 +1,45 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, SafeAreaView, Dimensions, TextInput, ActivityIndicator } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { menuItems, categories } from '../data/menuItems';
+import { categories } from '../data/menuItems';
 import FoodCard from '../components/FoodCard';
 import CategoryFilter from '../components/CategoryFilter';
 import { useCart } from '../context/CartContext';
+import { api } from '../services/api';
 
 const { width } = Dimensions.get('window');
 
 export default function MenuScreen() {
+    const [menuData, setMenuData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('Все');
+    const [searchQuery, setSearchQuery] = useState('');
     const { totalItems } = useCart();
 
-    const filteredItems = activeCategory === 'Все'
-        ? menuItems
-        : menuItems.filter(item => item.category === activeCategory);
+    useEffect(() => {
+        loadMenu();
+    }, []);
+
+    const loadMenu = async () => {
+        setIsLoading(true);
+        try {
+            const data = await api.getMenu();
+            setMenuData(data);
+        } catch (error) {
+            console.error('Failed to load menu:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Combined filtering: category AND search query
+    const filteredItems = menuData.filter(item => {
+        const matchesCategory = activeCategory === 'Все' || item.category === activeCategory;
+        const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
 
     return (
         <SafeAreaView style={styles.safe}>
@@ -27,12 +52,27 @@ export default function MenuScreen() {
                     <Text style={styles.subtitle}>Выберите что-нибудь вкусное</Text>
                 </View>
                 <View style={styles.cartBadge}>
-                    <Text style={{ fontSize: 20 }}>🛒</Text>
+                    <Ionicons name="cart-outline" size={26} color="#fff" />
                     {totalItems > 0 && (
                         <View style={styles.badge}>
                             <Text style={styles.badgeText}>{totalItems}</Text>
                         </View>
                     )}
+                </View>
+            </View>
+
+            {/* Search Bar */}
+            <View style={styles.searchContainer}>
+                <View style={styles.searchBar}>
+                    <Ionicons name="search-outline" size={20} color="#94a3b8" style={styles.searchIcon} />
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Поиск любимых блюд..."
+                        placeholderTextColor="#64748b"
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        clearButtonMode="while-editing"
+                    />
                 </View>
             </View>
 
@@ -44,21 +84,28 @@ export default function MenuScreen() {
             />
 
             {/* Food Grid */}
-            <FlatList
-                data={filteredItems}
-                renderItem={({ item }) => <FoodCard item={item} />}
-                keyExtractor={item => item.id}
-                numColumns={2}
-                columnWrapperStyle={styles.row}
-                contentContainerStyle={styles.list}
-                showsVerticalScrollIndicator={false}
-                ListEmptyComponent={
-                    <View style={styles.empty}>
-                        <Text style={{ fontSize: 40 }}>🤷</Text>
-                        <Text style={styles.emptyText}>В этой категории пока пусто</Text>
-                    </View>
-                }
-            />
+            {isLoading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#6366f1" />
+                    <Text style={styles.loadingText}>Загружаем вкусности...</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={filteredItems}
+                    renderItem={({ item }) => <FoodCard item={item} />}
+                    keyExtractor={item => item.id}
+                    numColumns={2}
+                    columnWrapperStyle={styles.row}
+                    contentContainerStyle={styles.list}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={
+                        <View style={styles.empty}>
+                            <Text style={{ fontSize: 40 }}>🤷</Text>
+                            <Text style={styles.emptyText}>В этой категории пока пусто</Text>
+                        </View>
+                    }
+                />
+            )}
         </SafeAreaView>
     );
 }
@@ -78,8 +125,35 @@ const styles = StyleSheet.create({
         justifyContent: 'center', alignItems: 'center',
     },
     badgeText: { color: '#fff', fontSize: 10, fontWeight: '800' },
+
+    searchContainer: {
+        paddingHorizontal: 16,
+        paddingBottom: 8,
+    },
+    searchBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(30, 41, 59, 0.4)',
+        borderRadius: 16,
+        paddingHorizontal: 14,
+        height: 50,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.05)',
+    },
+    searchIcon: {
+        marginRight: 10,
+    },
+    searchInput: {
+        flex: 1,
+        color: '#fff',
+        fontSize: 15,
+        fontWeight: '500',
+    },
+
     row: { justifyContent: 'space-between', paddingHorizontal: 16 },
     list: { paddingTop: 8, paddingBottom: 100 },
     empty: { alignItems: 'center', marginTop: 60 },
     emptyText: { color: '#94a3b8', marginTop: 12, fontSize: 16 },
+    loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    loadingText: { color: '#94a3b8', marginTop: 16, fontSize: 15, fontWeight: '500' },
 });
