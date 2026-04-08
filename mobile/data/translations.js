@@ -4,6 +4,13 @@ export const translations = {
         menu: 'Меню',
         cart: 'Корзина',
         profile: 'Профиль',
+        welcomeBack: 'С возвращением',
+        welcomeTo: 'Добро пожаловать в',
+        smartDiningDesc: 'Заказывай вкусную еду заранее и забирай без очередей.',
+        prepTime: 'время готовки',
+        min: 'мин',
+        freshFood: 'всегда свежее',
+        openMenu: 'Открыть меню',
 
         // Settings
         settings: 'Настройки',
@@ -76,6 +83,13 @@ export const translations = {
         menu: 'Мәзір',
         cart: 'Себет',
         profile: 'Профиль',
+        welcomeBack: 'Қайта оралуыңызбен',
+        welcomeTo: 'Қош келдіңіз',
+        smartDiningDesc: 'Дәмді тағамды алдын ала тапсырыс беріп, кезексіз алыңыз.',
+        prepTime: 'дайындау уақыты',
+        min: 'мин',
+        freshFood: 'әрдайым жаңа',
+        openMenu: 'Мәзірді ашу',
 
         // Settings
         settings: 'Баптаулар',
@@ -148,6 +162,13 @@ export const translations = {
         menu: 'Menu',
         cart: 'Cart',
         profile: 'Profile',
+        welcomeBack: 'Welcome back',
+        welcomeTo: 'Welcome to',
+        smartDiningDesc: 'Order delicious food ahead of time and skip the line.',
+        prepTime: 'prep time',
+        min: 'min',
+        freshFood: 'hot & fresh',
+        openMenu: 'Open Menu',
 
         // Settings
         settings: 'Settings',

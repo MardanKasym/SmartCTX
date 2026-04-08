@@ -1,5 +1,7 @@
 import { menuItems } from '../data/menuItems';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const MENU_CACHE_KEY = '@smartctx_menu_cache';
 // Simulate network delay
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 

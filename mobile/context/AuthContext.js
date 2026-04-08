@@ -3,7 +3,13 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({
+        id: 'user_123',
+        name: 'Мардан Көркемұлы',
+        schoolId: '2024001',
+        balance: 5000,
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [orderHistory, setOrderHistory] = useState([
         { id: 'SC-1001', date: '01 Мар, 12:30', total: 1800, items: 2, status: 'COMPLETED' },
@@ -26,7 +32,7 @@ export const AuthProvider = ({ children }) => {
                 if (schoolId && password) {
                     const userData = {
                         id: 'user_123',
-                        name: 'Иван Иванов',
+                        name: 'Мардан Көркемұлы',
                         schoolId: schoolId,
                         balance: 5000,
                         avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'

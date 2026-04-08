@@ -5,7 +5,7 @@ export const menuItems = [
         category: 'Супы',
         price: 900,
         calories: 250,
-        image: 'https://images.unsplash.com/photo-1547592166-23acbe3a624b?auto=format&fit=crop&w=400&q=60',
+        image: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=80',
         description: 'Традиционный свекольный суп со сметаной и зеленью.',
         ingredients: ['Свекла', 'Капуста', 'Картофель', 'Морковь', 'Говядина', 'Сметана'],
         allergens: ['Лактоза (сметана)']

@@ -66,11 +66,9 @@ export default function FoodCard({ item }) {
             onPress={() => navigation.navigate('DishDetails', { item })}
         >
             <Animated.View style={[styles.card, { transform: [{ scale: scaleAnim }] }]}>
-                {/* Image with overlay */}
+                {/* Image */}
                 <View style={styles.imageContainer}>
                     <Image source={{ uri: item.image }} style={styles.image} />
-                    {/* Gradient overlay */}
-                    <View style={styles.imageOverlay} />
                     {/* Calorie badge */}
                     <View style={styles.calorieBadge}>
                         <Text style={styles.calorieIcon}>🔥</Text>
@@ -121,27 +119,19 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: CARD_WIDTH * 0.7,
-    },
-    imageOverlay: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: 40,
-        backgroundColor: 'rgba(15, 23, 42, 0.6)',
+        height: CARD_WIDTH * 0.75, // slightly taller for better mobile aspect ratio
     },
     calorieBadge: {
         position: 'absolute',
-        top: 8,
-        right: 8,
+        top: 10,
+        right: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.65)',
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 12,
-        gap: 3,
+        gap: 4,
     },
     calorieIcon: {
         fontSize: 10,
@@ -149,35 +139,37 @@ const styles = StyleSheet.create({
     calorieText: {
         color: '#fbbf24',
         fontSize: 11,
-        fontWeight: '700',
+        fontWeight: 'bold',
     },
     info: {
-        padding: 12,
+        padding: 14,
     },
     categoryTag: {
         alignSelf: 'flex-start',
-        paddingHorizontal: 10,
-        paddingVertical: 3,
-        borderRadius: 8,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 6,
         borderWidth: 1,
-        marginBottom: 6,
+        marginBottom: 8,
     },
     categoryText: {
         fontSize: 10,
-        fontWeight: '700',
+        fontWeight: '900',
         textTransform: 'uppercase',
+        letterSpacing: 0.5,
     },
     name: {
-        fontSize: 15,
-        fontWeight: '700',
+        fontSize: 16,
+        fontWeight: 'bold',
         color: '#f8fafc',
-        marginBottom: 4,
+        marginBottom: 6,
+        lineHeight: 22,
     },
     desc: {
-        fontSize: 12,
+        fontSize: 13,
         color: '#94a3b8',
-        lineHeight: 16,
-        marginBottom: 10,
+        lineHeight: 18,
+        marginBottom: 14,
     },
     footer: {
         flexDirection: 'row',
@@ -185,14 +177,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     price: {
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: '800',
         color: '#10b981',
     },
     addBtn: {
         backgroundColor: '#6366f1',
-        width: 34,
-        height: 34,
+        width: 36,
+        height: 36,
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
@@ -205,7 +197,6 @@ const styles = StyleSheet.create({
     addBtnText: {
         color: '#fff',
         fontSize: 20,
-        fontWeight: '600',
-        marginTop: -2,
+        fontWeight: 'bold',
     },
 });
